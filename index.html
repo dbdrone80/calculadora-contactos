@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Contactos">
+<meta name="theme-color" content="#1D9E75">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Calculadora de Contactos</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f0f4f2;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+  .app-header {
+    background: #1D9E75;
+    padding: 52px 20px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .app-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .app-header-text h1 { font-size: 20px; font-weight: 700; color: #fff; }
+  .app-header-text p  { font-size: 12px; color: rgba(255,255,255,0.8); margin-top: 2px; }
+  .content { padding: 16px; max-width: 500px; margin: 0 auto; }
+  .card {
+    background: #fff; border-radius: 16px;
+    padding: 18px; margin-bottom: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  .card-label {
+    font-size: 11px; font-weight: 700; color: #1D9E75;
+    text-transform: uppercase; letter-spacing: .06em; margin-bottom: 14px;
+  }
+  label { font-size: 13px; color: #555; display: block; margin-bottom: 5px; font-weight: 500; }
+  input[type=date] {
+    width: 100%; padding: 12px 14px; font-size: 15px;
+    border: 1.5px solid #e0e0e0; border-radius: 10px;
+    background: #fafafa; color: #1a1a1a; outline: none;
+    margin-bottom: 14px; -webkit-appearance: none;
+    transition: border-color .2s;
+  }
+  input[type=date]:focus { border-color: #1D9E75; background: #fff; }
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '▾'; position: absolute; right: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: #888; pointer-events: none; font-size: 14px;
+  }
+  select {
+    width: 100%; padding: 12px 36px 12px 14px; font-size: 15px;
+    border: 1.5px solid #e0e0e0; border-radius: 10px;
+    background: #fafafa; color: #1a1a1a; outline: none;
+    -webkit-appearance: none; appearance: none;
+    transition: border-color .2s;
+  }
+  select:focus { border-color: #1D9E75; background: #fff; }
+  .btn {
+    width: 100%; padding: 15px; font-size: 16px; font-weight: 700;
+    background: #1D9E75; color: #fff; border: none; border-radius: 12px;
+    cursor: pointer; margin-top: 16px;
+    transition: background .15s, transform .1s;
+  }
+  .btn:active { background: #0F6E56; transform: scale(0.98); }
+  .result { display: none; }
+  .result.show { display: block; }
+  .timeline { display: flex; flex-direction: column; }
+  .titem { display: flex; gap: 12px; align-items: flex-start; position: relative; }
+  .titem:not(:last-child)::before {
+    content: ''; position: absolute; left: 15px; top: 32px;
+    width: 2px; height: calc(100% - 4px); background: #e5e5e0; z-index: 0;
+  }
+  .dot {
+    min-width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; z-index: 1; margin-top: 2px; flex-shrink: 0;
+  }
+  .dot-call { background: #9FE1CB; color: #04342C; }
+  .dot-skip { background: #f0efea; color: #bbb; border: 1.5px dashed #ddd; }
+  .dot-insp { background: #FAC775; color: #412402; }
+  .tinfo { padding: 4px 0 16px; flex: 1; }
+  .tdate { font-size: 14px; font-weight: 600; color: #1a1a1a; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+  .taction { font-size: 12px; color: #555; margin-top: 4px; line-height: 1.6; }
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 600; }
+  .tag-green  { background: #d4f5e9; color: #04342C; }
+  .tag-amber  { background: #fde9c0; color: #412402; }
+  .tag-blue   { background: #d0e8fb; color: #042C53; }
+  .tag-sunday { background: #fff0d0; color: #7a4a00; }
+  .note-box {
+    background: #f0f4f2; border-radius: 10px;
+    padding: 12px 14px; font-size: 12px; color: #444;
+    line-height: 1.7; border-left: 3px solid #1D9E75;
+  }
+  .divider { border: none; border-top: 1px solid #f0efea; margin: 14px 0; }
+  .install-banner {
+    background: #fff; border-radius: 16px; padding: 14px 16px;
+    margin-bottom: 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    display: flex; align-items: center; gap: 12px;
+    border: 1.5px solid #d4f5e9;
+  }
+  .install-banner-icon { font-size: 26px; }
+  .install-banner-text { flex: 1; }
+  .install-banner-text strong { font-size: 13px; color: #1a1a1a; display: block; }
+  .install-banner-text span { font-size: 12px; color: #666; }
+  .install-banner-close { font-size: 18px; color: #aaa; cursor: pointer; padding: 4px; }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <div class="app-icon">📋</div>
+  <div class="app-header-text">
+    <h1>Contactos</h1>
+    <p>Protocolo de inspecciones</p>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="install-banner" id="install-banner" style="display:none">
+    <div class="install-banner-icon">📲</div>
+    <div class="install-banner-text">
+      <strong>Instalar como app</strong>
+      <span>Toca <strong>Compartir</strong> → <strong>Agregar a inicio</strong></span>
+    </div>
+    <div class="install-banner-close" onclick="document.getElementById('install-banner').style.display='none'">✕</div>
+  </div>
+
+  <div class="card">
+    <div class="card-label">📅 Datos de la inspección</div>
+    <label>Fecha de inspección</label>
+    <input type="date" id="insp-date">
+    <label>Tipo de seguro</label>
+    <div class="select-wrap">
+      <select id="ins-type">
+        <option value="swyfft">Swyfft 4 Point</option>
+        <option value="swyfft_ext">Swyfft Exterior</option>
+        <option value="amwins_ext">Amwins Exterior</option>
+        <option value="amwins">Amwins 4 Point</option>
+        <option value="annex_ext">Annex Risk Exterior</option>
+        <option value="annex">Annex Risk 4 Point</option>
+        <option value="crestwell">Crestwell (comercial)</option>
+        <option value="security_first">Security First 4 Point</option>
+      </select>
+    </div>
+    <button class="btn" onclick="calculate()">📞 Calcular fechas de contacto</button>
+  </div>
+
+  <div class="result" id="result">
+    <div class="card">
+      <div class="card-label">🗓 Calendario de contactos</div>
+      <div class="timeline" id="timeline"></div>
+      <hr class="divider">
+      <div class="note-box" id="protocol-note"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const days = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const months = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+function fmt(d) {
+  const isSunday = d.getDay() === 0;
+  const sundayTag = isSunday ? ' <span class="tag tag-sunday">domingo</span>' : '';
+  return days[d.getDay()] + ' ' + d.getDate() + ' ' + months[d.getMonth()] + sundayTag;
+}
+
+function addDays(d, n) {
+  const r = new Date(d); r.setDate(r.getDate() + n); return r;
+}
+
+function calculate() {
+  const val = document.getElementById('insp-date').value;
+  if (!val) { alert('Selecciona una fecha de inspección'); return; }
+  const type = document.getElementById('ins-type').value;
+  const inspDate = new Date(val + 'T12:00:00');
+
+  let items = [];
+  const isExterior = ['swyfft_ext', 'amwins_ext', 'annex_ext'].includes(type);
+  const needsAgentCall = ['amwins', 'annex', 'security_first'].includes(type);
+
+  if (isExterior) {
+    const c1 = addDays(inspDate, -2);
+    const sep1 = addDays(c1, 1);
+    const realInsp = sep1 >= inspDate ? addDays(sep1, 1) : inspDate;
+    items = [
+      {
+        dot: 'dot-call',
+        date: fmt(c1) + ' <span class="tag tag-green">Único intento</span>',
+        action: '📞 Llamada + texto + email (si disponible)<br>Dejar voicemail si no contesta'
+      },
+      { dot: 'dot-skip', date: fmt(sep1), action: 'Día de separación — no contactar' },
+      {
+        dot: 'dot-insp',
+        date: fmt(realInsp) + ' <span class="tag tag-amber">Inspección</span>',
+        action: '🚪 Si no hubo respuesta: toca la puerta cortésmente y procede con la inspección exterior'
+      }
+    ];
+  } else {
+    const c3 = addDays(inspDate, -2);
+    const sep3 = addDays(c3, 1);
+    const c2 = addDays(c3, -2);
+    const sep2 = addDays(c2, 1);
+    const c1 = addDays(c2, -2);
+    const sep1 = addDays(c1, 1);
+
+    const agentLine = needsAgentCall
+      ? '<br>📞 <strong>Llamada al agente</strong> <span class="tag tag-blue">requerida</span>'
+      : '';
+    const inspAction = type === 'crestwell'
+      ? '⚠️ Property Manager debe estar presente durante toda la inspección'
+      : '✅ Inspección programada';
+
+    items = [
+      {
+        dot: 'dot-call',
+        date: fmt(c1) + ' <span class="tag tag-green">Intento 1</span>',
+        action: '📞 Llamada + texto + email (si disponible)'
+      },
+      { dot: 'dot-skip', date: fmt(sep1), action: 'Día de separación — no contactar' },
+      {
+        dot: 'dot-call',
+        date: fmt(c2) + ' <span class="tag tag-green">Intento 2</span>',
+        action: '📞 Llamada + texto'
+      },
+      { dot: 'dot-skip', date: fmt(sep2), action: 'Día de separación — no contactar' },
+      {
+        dot: 'dot-call',
+        date: fmt(c3) + ' <span class="tag tag-green">Intento 3</span>',
+        action: '📞 Llamada + texto' + agentLine
+      },
+      { dot: 'dot-skip', date: fmt(sep3), action: 'Día de separación — no contactar' },
+      {
+        dot: 'dot-insp',
+        date: fmt(inspDate) + ' <span class="tag tag-amber">Inspección</span>',
+        action: inspAction
+      }
+    ];
+  }
+
+  document.getElementById('timeline').innerHTML = items.map(it => `
+    <div class="titem">
+      <div class="dot ${it.dot}">${it.dot==='dot-skip'?'–':it.dot==='dot-insp'?'✓':'☎'}</div>
+      <div class="tinfo">
+        <div class="tdate">${it.date}</div>
+        <div class="taction">${it.action}</div>
+      </div>
+    </div>
+  `).join('');
+
+  const notes = {
+    swyfft:         '📋 <strong>Swyfft 4 Point:</strong> No contactes al agente salvo instrucción específica. Si los 3 intentos fallan → misión se convierte automáticamente a 4Point-Self (solo exterior).',
+    swyfft_ext:     '📋 <strong>Swyfft Exterior:</strong> Solo 1 intento requerido, al menos 1 día antes. Si el asegurado da permiso antes, puedes ir de inmediato. Si no hay respuesta: toca la puerta y procede con la inspección exterior.',
+    amwins_ext:     '📋 <strong>Amwins Exterior:</strong> Solo 1 intento requerido, al menos 1 día antes. Si no hay respuesta: toca la puerta y procede con la inspección exterior.',
+    amwins:         '📋 <strong>Amwins 4 Point:</strong> Además de los 3 intentos al asegurado, debes hacer 1 llamada al agente. Si no hay respuesta → marcar como "Insured Unreachable".',
+    annex_ext:      '📋 <strong>Annex Risk Exterior:</strong> Solo 1 intento requerido, al menos 1 día antes. Si no hay respuesta: toca la puerta y procede con la inspección exterior.',
+    annex:          '📋 <strong>Annex Risk 4 Point:</strong> Además de los 3 intentos al asegurado, debes hacer 1 llamada al agente. Si no hay respuesta → marcar como "Insured Unreachable".',
+    crestwell:      '📋 <strong>Crestwell comercial:</strong> El Property Manager debe estar presente toda la inspección. No se permiten DIY ni visitas sin cita. Si te niegan la entrada: check-in en Bees360 + foto + documentar en feedback.',
+    security_first: '📋 <strong>Security First 4 Point:</strong> Además de los 3 intentos al asegurado, debes hacer 1 llamada al agente. Si no hay respuesta → marcar como "Insured Unreachable".'
+  };
+
+  document.getElementById('protocol-note').innerHTML = notes[type];
+  document.getElementById('result').classList.add('show');
+  document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Mostrar banner de instalación en móvil si no está instalada
+if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+  const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+  if (!isStandalone) {
+    document.getElementById('install-banner').style.display = 'flex';
+  }
+}
+</script>
+</body>
+</html>
