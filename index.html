@@ -148,6 +148,7 @@
         <option value="swyfft_ext">Swyfft Exterior</option>
         <option value="amwins_ext">Amwins Exterior</option>
         <option value="amwins">Amwins 4 Point</option>
+        <option value="amwins_premium">Amwins Premium 4 Point</option>
         <option value="annex_ext">Annex Risk Exterior</option>
         <option value="annex">Annex Risk 4 Point</option>
         <option value="crestwell">Crestwell (comercial)</option>
@@ -190,7 +191,7 @@ function calculate() {
 
   let items = [];
   const isExterior = ['swyfft_ext', 'amwins_ext', 'annex_ext'].includes(type);
-  const needsAgentCall = ['amwins', 'annex', 'security_first'].includes(type);
+  const needsAgentCall = ['amwins', 'amwins_premium', 'annex', 'security_first'].includes(type);
 
   if (isExterior) {
     const c1 = addDays(inspDate, -2);
@@ -266,6 +267,7 @@ function calculate() {
     swyfft_ext:     '📋 <strong>Swyfft Exterior:</strong> Solo 1 intento requerido, al menos 1 día antes. Si el asegurado da permiso antes, puedes ir de inmediato. Si no hay respuesta: toca la puerta y procede con la inspección exterior.',
     amwins_ext:     '📋 <strong>Amwins Exterior:</strong> Solo 1 intento requerido, al menos 1 día antes. Si no hay respuesta: toca la puerta y procede con la inspección exterior.',
     amwins:         '📋 <strong>Amwins 4 Point:</strong> Además de los 3 intentos al asegurado, debes hacer 1 llamada al agente. Si no hay respuesta → marcar como "Insured Unreachable".',
+    amwins_premium: '📋 <strong>Amwins Premium 4 Point:</strong> Además de los 3 intentos al asegurado, debes hacer 1 llamada al agente. Si no hay respuesta → marcar como "Insured Unreachable".',
     annex_ext:      '📋 <strong>Annex Risk Exterior:</strong> Solo 1 intento requerido, al menos 1 día antes. Si no hay respuesta: toca la puerta y procede con la inspección exterior.',
     annex:          '📋 <strong>Annex Risk 4 Point:</strong> Además de los 3 intentos al asegurado, debes hacer 1 llamada al agente. Si no hay respuesta → marcar como "Insured Unreachable".',
     crestwell:      '📋 <strong>Crestwell comercial:</strong> El Property Manager debe estar presente toda la inspección. No se permiten DIY ni visitas sin cita. Si te niegan la entrada: check-in en Bees360 + foto + documentar en feedback.',
