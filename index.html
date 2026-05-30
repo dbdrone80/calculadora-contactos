@@ -151,6 +151,7 @@
         <option value="amwins_premium">Amwins Premium 4 Point</option>
         <option value="annex_ext">Annex Risk Exterior</option>
         <option value="annex">Annex Risk 4 Point</option>
+        <option value="florida_family_ext">Florida Family Exterior</option>
         <option value="crestwell">Crestwell (comercial)</option>
         <option value="security_first">Security First 4 Point</option>
       </select>
@@ -190,7 +191,7 @@ function calculate() {
   const inspDate = new Date(val + 'T12:00:00');
 
   let items = [];
-  const isExterior = ['swyfft_ext', 'amwins_ext', 'annex_ext'].includes(type);
+  const isExterior = ['swyfft_ext', 'amwins_ext', 'annex_ext', 'florida_family_ext'].includes(type);
   const needsAgentCall = ['amwins', 'amwins_premium', 'annex', 'security_first'].includes(type);
 
   if (isExterior) {
@@ -270,6 +271,7 @@ function calculate() {
     amwins_premium: '📋 <strong>Amwins Premium 4 Point:</strong> Además de los 3 intentos al asegurado, debes hacer 1 llamada al agente. Si no hay respuesta → marcar como "Insured Unreachable".',
     annex_ext:      '📋 <strong>Annex Risk Exterior:</strong> Solo 1 intento requerido, al menos 1 día antes. Si no hay respuesta: toca la puerta y procede con la inspección exterior.',
     annex:          '📋 <strong>Annex Risk 4 Point:</strong> Además de los 3 intentos al asegurado, debes hacer 1 llamada al agente. Si no hay respuesta → marcar como "Insured Unreachable".',
+    florida_family_ext: '📋 <strong>Florida Family Exterior:</strong> Solo 1 intento requerido, al menos 1 día antes. Si el asegurado da permiso antes, puedes ir de inmediato. Si no hay respuesta: toca la puerta cortésmente y procede con la inspección exterior.',
     crestwell:      '📋 <strong>Crestwell comercial:</strong> El Property Manager debe estar presente toda la inspección. No se permiten DIY ni visitas sin cita. Si te niegan la entrada: check-in en Bees360 + foto + documentar en feedback.',
     security_first: '📋 <strong>Security First 4 Point:</strong> Además de los 3 intentos al asegurado, debes hacer 1 llamada al agente. Si no hay respuesta → marcar como "Insured Unreachable".'
   };
